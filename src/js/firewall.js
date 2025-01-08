@@ -96,8 +96,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    window.removeRule = function(index) {
-        rules.splice(index, 1);
-        updateRulesTable();
+    window.removeRule = async function(index) {
+        const rule = rules[index];
+        try {
+            const response = await fetch('/remove-rule', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    target: rule.target,
+                    type: rule.target.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/) ? 'ip' : 'website'
+                })
+            });
+            
+            const data = await response.json();
+            if (response.ok) {
+                rules.splice(index, 1);
+                updateRulesTable();
+                output.textContent = data.message;
+            } else {
+                output.textContent = data.error;
+            }
+        } catch (error) {
+            output.textContent = `Error: ${error.message}`;
+        }
     };
 });

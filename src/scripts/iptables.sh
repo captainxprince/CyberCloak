@@ -125,6 +125,16 @@ list_rules() {
 # block_website "www.google.com"
 # filter_ip "192.168.1.100" "DROP"
 
+
+
+
+
+
+
+
+
+
+
 # Save the rules
 if [ -d "/etc/iptables" ]; then
     iptables-save > /etc/iptables/rules.v4
