@@ -1,77 +1,235 @@
-# README.md
+# CyberCloak - Basic Firewall Management System
 
-# Basic Firewall Project
-
-This project is a basic firewall application that utilizes HTML, CSS, JavaScript, and iptables for packet filtering. The application provides a user-friendly interface for managing firewall rules and monitoring network traffic.
-
-## Project Structure
-
-```
-basic-firewall
-├── src
-│   ├── index.html          # Main HTML document
-│   ├── css
-│   │   └── styles.css      # Styles for the web application
-│   ├── js
-│   │   └── firewall.js      # JavaScript functionality for the firewall
-│   └── scripts
-│       └── iptables.sh      # Shell script for configuring iptables
-├── server
-│   └── server.js           # Express.js server for handling requests
-├── package.json             # npm configuration file
-└── README.md                # Project documentation
-```
+A web-based firewall management interface that provides easy control over iptables rules for website blocking and IP filtering.
 
 ## Features
 
-- User-friendly web interface for managing firewall rules
-- Real-time monitoring of network traffic
-- Integration with iptables for packet filtering
-- Express.js server for handling requests
+- 🌐 Website Blocking
+  - Block access to specific websites
+  - DNS-level blocking
+  - IP resolution and blocking
+  
+- 🔒 IP Filtering
+  - Filter IP addresses with ACCEPT/DROP/REJECT rules
+  - Real-time rule application
+  - Validation for IP addresses
+  
+- 📋 Rule Management
+  - View active rules
+  - Remove rules dynamically
+  - Persistent rule storage
 
 ## Prerequisites
 
-- Node.js and npm installed on your machine.
-- Basic knowledge of iptables for configuring firewall rules.
+- Linux operating system
+- Node.js (v12 or higher)
+- npm (Node Package Manager)
+- sudo privileges
+- iptables
+- dnsutils package (for host command)
 
 ## Installation
 
 1. Clone the repository:
-   ```
-   git clone <repository-url>
-   ```
+```bash
+git clone https://github.com/yourusername/cybercloak.git
+cd cybercloak
+```
+2. Install dependencies:
+```bash
+npm install
+```
+3. Make the iptables script executable:
+```bash
+chmod +x src/scripts/iptables.sh
+```
+4. Start the application:
+```bash
+npm start
+```
 
-2. Navigate to the project directory:
-   ```
-   cd basic-firewall
-   ```
+5. Open your browser and navigate to:
+```markdown
+http://localhost:3000
+```
 
-3. Install the necessary dependencies:
-   ```
-   npm install
-   ```
+5. Use the web interface to:
+-Block websites
+-Filter IP addresses
+-Manage active rules
+
+## Project Structure
+
+```markdown
+├── package.json
+├── README.md
+└── src/
+    ├── css/
+    │   └── styles.css
+    ├── index.html
+    ├── js/
+    │   ├── firewall.js
+    │   └── server.js
+    └── scripts/
+        └── iptables.sh
+```
+Collecting workspace information
+
+I'll help create a comprehensive 
+
+README.md
+
+ for the project:
+
+```markdown
+# CyberCloak - Basic Firewall Management System
+
+A web-based firewall management interface that provides easy control over iptables rules for website blocking and IP filtering.
+
+## Features
+
+- 🌐 Website Blocking
+  - Block access to specific websites
+  - DNS-level blocking
+  - IP resolution and blocking
+  
+- 🔒 IP Filtering
+  - Filter IP addresses with ACCEPT/DROP/REJECT rules
+  - Real-time rule application
+  - Validation for IP addresses
+  
+- 📋 Rule Management
+  - View active rules
+  - Remove rules dynamically
+  - Persistent rule storage
+
+## Prerequisites
+
+- Linux operating system
+- Node.js (v12 or higher)
+- npm (Node Package Manager)
+- sudo privileges
+- iptables
+- dnsutils package (for host command)
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/cybercloak.git
+cd cybercloak
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Set execute permissions for the iptables script:
+```bash
+chmod +x src/scripts/iptables.sh
+```
 
 ## Usage
 
-1. Start the Express.js server:
-   ```
-   node server/server.js
-   ```
+1. Start the server:
+```bash
+npm start
+```
 
-2. Open `src/index.html` in your web browser to access the firewall interface.
-3. Use the interface to manage firewall rules and monitor network traffic.
-4. Run the `src/scripts/iptables.sh` script to configure iptables as needed.
+2. Open your browser and navigate to:
+```
+http://localhost:3000
+```
+
+3. Use the web interface to:
+   - Block websites
+   - Filter IP addresses
+   - Manage active rules
+
+## Project Structure
+
+```
+├── package.json
+├── README.md
+└── src/
+    ├── css/
+    │   └── styles.css
+    ├── index.html
+    ├── js/
+    │   ├── firewall.js
+    │   └── server.js
+    └── scripts/
+        └── iptables.sh
+```
+
+## API Endpoints
+
+- `POST /block-website`: Block a website
+- `POST /filter-ip`: Apply IP filtering rules
+- `POST /remove-rule`: Remove existing rules
 
 ## Security Considerations
 
-- Ensure that the Express.js server is properly secured and configured.
-- Regularly update dependencies to avoid security vulnerabilities.
-- Use HTTPS to encrypt data transmitted between the client and server.
+- Run with appropriate permissions
+- Backup iptables rules before modifications
+- Validate all user inputs
+- Use secure protocols for remote access
 
-## Contributing
+## Development
 
-Feel free to submit issues or pull requests to improve the project. Your contributions are welcome!
+To modify the firewall rules or add new features:
+
+1. Edit 
+
+iptables.sh
+
+ for firewall logic
+2. Update 
+
+server.js
+
+ for API endpoints
+3. Modify 
+
+firewall.js
+
+ for frontend functionality
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+MIT License
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
+
+## Author
+
+Your Name
+
+## Acknowledgments
+
+- Express.js team
+- iptables developers
+- Contributors and testers
+
+## Troubleshooting
+
+1. If rules aren't applying:
+   - Check sudo permissions
+   - Verify iptables installation
+   - Check system logs
+
+2. If website blocking fails:
+   - Verify dnsutils package installation
+   - Check DNS resolution
+   - Verify network connectivity
+
+## Support
+
+For issues and feature requests, please create an issue in the repository.
