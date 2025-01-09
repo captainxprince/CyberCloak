@@ -1,125 +1,107 @@
 // firewall.js
 
-// Basic packet filtering logic
-document.addEventListener('DOMContentLoaded', function() {
-    const blockButton = document.getElementById('block-website');
-    const filterButton = document.getElementById('filter-button');
-    const output = document.getElementById('output');
-    const rulesBody = document.getElementById('rules-body');
-    
+document.addEventListener('DOMContentLoaded', () => {
+    const elements = {
+        blockBtn: document.getElementById('block-website'),
+        filterBtn: document.getElementById('filter-button'),
+        output: document.getElementById('output'),
+        rulesBody: document.getElementById('rules-body'),
+        websiteInput: document.getElementById('website-input'),
+        ipInput: document.getElementById('ip-input'),
+        actionSelect: document.getElementById('action-select')
+    };
+
     let rules = [];
 
-    // Website Blocking
-    blockButton.addEventListener('click', async function() {
-        const website = document.getElementById('website-input').value;
-        if (isValidDomain(website)) {
-            try {
-                const response = await fetch('/block-website', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ website })
-                });
-                const data = await response.json();
-                
-                if (response.ok) {
-                    addRule(website, 'BLOCK');
-                    updateRulesTable();
-                    output.textContent = data.message;
-                } else {
-                    output.textContent = data.error;
-                }
-            } catch (error) {
-                output.textContent = `Error: ${error.message}`;
-            }
-        } else {
-            output.textContent = 'Invalid website address';
+    // Helper functions
+    const displayMessage = msg => elements.output.textContent = msg;
+    const isValid = (value, pattern) => pattern.test(value);
+
+    const validators = {
+        ip: ip => isValid(ip, /^(\d{1,3}\.){3}\d{1,3}$/),
+        domain: domain => isValid(domain, /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/)
+    };
+
+    // API calls
+    const makeRequest = async (endpoint, data) => {
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            
+            if (!response.ok) throw new Error(result.error);
+            return result;
+        } catch (error) {
+            throw new Error(error.message);
         }
-    });
+    };
 
-    // IP Filtering
-    filterButton.addEventListener('click', async function() {
-        const ipAddress = document.getElementById('ip-input').value;
-        const action = document.getElementById('action-select').value;
-        
-        if (isValidIP(ipAddress)) {
-            try {
-                const response = await fetch('/filter-ip', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ ip: ipAddress, action })
-                });
-                const data = await response.json();
-                
-                if (response.ok) {
-                    addRule(ipAddress, action);
-                    updateRulesTable();
-                    output.textContent = data.message;
-                } else {
-                    output.textContent = data.error;
-                }
-            } catch (error) {
-                output.textContent = `Error: ${error.message}`;
-            }
-        } else {
-            output.textContent = 'Invalid IP address';
-        }
-    });
-
-    function isValidIP(ip) {
-        const ipPattern = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-        return ipPattern.test(ip);
-    }
-
-    function isValidDomain(domain) {
-        const domainPattern = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/;
-        return domainPattern.test(domain);
-    }
-
-    function addRule(target, action) {
-        rules.push({ target, action });
-    }
-
-    function updateRulesTable() {
-        rulesBody.innerHTML = '';
-        rules.forEach((rule, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
+    // UI updates
+    const updateRulesTable = () => {
+        elements.rulesBody.innerHTML = rules.map((rule, index) => `
+            <tr>
                 <td>${rule.target}</td>
                 <td>${rule.action}</td>
                 <td><button class="button" onclick="removeRule(${index})">Remove</button></td>
-            `;
-            rulesBody.appendChild(row);
-        });
-    }
+            </tr>
+        `).join('');
+    };
 
-    window.removeRule = async function(index) {
-        const rule = rules[index];
+    // Event handlers
+    const handleBlock = async () => {
+        const website = elements.websiteInput.value;
+        if (!validators.domain(website)) {
+            return displayMessage('Invalid website address');
+        }
+
         try {
-            const response = await fetch('/remove-rule', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    target: rule.target,
-                    type: rule.target.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/) ? 'ip' : 'website'
-                })
-            });
-            
-            const data = await response.json();
-            if (response.ok) {
-                rules.splice(index, 1);
-                updateRulesTable();
-                output.textContent = data.message;
-            } else {
-                output.textContent = data.error;
-            }
+            const data = await makeRequest('/block-website', { website });
+            rules.push({ target: website, action: 'BLOCK' });
+            updateRulesTable();
+            displayMessage(data.message);
         } catch (error) {
-            output.textContent = `Error: ${error.message}`;
+            displayMessage(`Error: ${error.message}`);
         }
     };
+
+    const handleFilter = async () => {
+        const ip = elements.ipInput.value;
+        const action = elements.actionSelect.value;
+
+        if (!validators.ip(ip)) {
+            return displayMessage('Invalid IP address');
+        }
+
+        try {
+            const data = await makeRequest('/filter-ip', { ip, action });
+            rules.push({ target: ip, action });
+            updateRulesTable();
+            displayMessage(data.message);
+        } catch (error) {
+            displayMessage(`Error: ${error.message}`);
+        }
+    };
+
+    // Remove rule handler
+    window.removeRule = async (index) => {
+        const rule = rules[index];
+        try {
+            const data = await makeRequest('/remove-rule', {
+                target: rule.target,
+                type: validators.ip(rule.target) ? 'ip' : 'website'
+            });
+            rules.splice(index, 1);
+            updateRulesTable();
+            displayMessage(data.message);
+        } catch (error) {
+            displayMessage(`Error: ${error.message}`);
+        }
+    };
+
+    // Event listeners
+    elements.blockBtn.addEventListener('click', handleBlock);
+    elements.filterBtn.addEventListener('click', handleFilter);
 });

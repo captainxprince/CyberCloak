@@ -135,6 +135,20 @@ list_rules() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Save the rules
 if [ -d "/etc/iptables" ]; then
     iptables-save > /etc/iptables/rules.v4
