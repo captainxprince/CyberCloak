@@ -53,10 +53,12 @@ npm start
 http://localhost:3000
 ```
 
-5. Use the web interface to:
+6. Use the web interface to:
+```markdown
 -Block websites
 -Filter IP addresses
 -Manage active rules
+```
 
 ## Project Structure
 
