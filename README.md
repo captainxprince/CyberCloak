@@ -1,8 +1,7 @@
-```markdown
 # CyberCloak - Basic Firewall Management System
 
 A web-based firewall management interface that provides easy control over iptables rules for website blocking and IP filtering.
-
+```markdown
 ## Features
 
 - 🌐 Website Blocking
@@ -127,7 +126,7 @@ MIT License
 
 ## Author
 
-Your Name
+Sayandeep, Dhamini, Vikas, Saloni
 
 ## Acknowledgments
 
