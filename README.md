@@ -100,17 +100,17 @@ To modify the firewall rules or add new features:
 
 iptables.sh
 
- for firewall logic
+for firewall logic
 2. Update 
 
 server.js
 
- for API endpoints
+for API endpoints
 3. Modify 
 
 firewall.js
 
- for frontend functionality
+for frontend functionality
 
 ## License
 
